@@ -59,6 +59,7 @@ class BaseConfig(object):
     SQLALCHEMY_POOL_TIMEOUT = 120
     SQLALCHEMY_MAX_OVERFLOW = 10
     SQLALCHEMY_POOL_RECYCLE = 120
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
     SQLALCHEMY_DATABASE_URI = "mysql+pymysql://{user}:{passwd}@{host}:{port}/{db}".format(
         db=os.environ.get('DB_NAME') or 'flask-boilerplate-app',
         user=os.environ.get('DB_USER') or 'root',

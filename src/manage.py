@@ -6,6 +6,7 @@ from flask_script.commands import Clean, Server, Shell
 from app import ApplicationFactory
 from flask_migrate import MigrateCommand
 from commands.orm import manager as orm_commands
+from commands.assets import Build, Watch, LintJS
 
 
 manager = Manager(ApplicationFactory.create_application)
@@ -18,6 +19,9 @@ manager.add_command("shell", Shell())
 manager.add_command('clean', Clean())
 manager.add_command('db', MigrateCommand)
 manager.add_command('orm', orm_commands)
+manager.add_command('build', Build())
+manager.add_command('watch', Watch())
+manager.add_command('lint_js', LintJS())
 
 
 @manager.command

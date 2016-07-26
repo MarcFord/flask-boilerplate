@@ -17,6 +17,11 @@ import os
 import redis
 import logging
 import uuid
+import warnings
+from flask.exthook import ExtDeprecationWarning
+
+
+warnings.simplefilter('ignore', ExtDeprecationWarning)
 
 db = AlchemyBase()
 migrate = Migrate()
