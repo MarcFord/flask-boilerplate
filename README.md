@@ -4,6 +4,7 @@ applications to be somewhat lacking.
 
 ## Requirements
 To use this for your flask application some requirements must be meet. I highly recommend the use of the use of virtualenv!
+
     1. You have Python 2.7.x installed
     2. You have Python PIP installed
     3. You have Node Package Manager installed (npm)    
