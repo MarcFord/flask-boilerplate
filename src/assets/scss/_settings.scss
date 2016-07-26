@@ -1,0 +1,44 @@
+//== Colors
+//
+//## Gray and brand colors for use across Bootstrap.
+$theme-primary:    #0085A1;
+
+$gray-base:        #000;
+$gray-darker:      lighten($gray-base, 13.5%); // #222
+$gray-dark:        lighten($gray-base, 20%);   // #333
+$gray:             lighten($gray-base, 33.5%); // #555
+$gray-light:       lighten($gray-base, 46.7%); // #777
+$gray-lighter:     lighten($gray-base, 93.5%); // #eee
+
+
+$placeholder-bg: #BBBBBB;
+$placeholder-text: $gray;
+$gray-lighter:           rgb(245,245,245) !default; // #eee
+$gray-lightest: #BDBDBD;
+$gray-voice: #6A6A6A;
+$gray-message:darken($gray-lighter,10);
+
+$alpha-white: rgba(255,255,255,0.8) !default;
+$alpha-gray: rgba(230,230,230,0.5) !default;
+
+$deep-blue: #3D4D65;
+$marketing_blue: #0075D2;
+$cerulean-blue: #077CB2;
+$facebook-blue: #3B5998;
+$instagram-blue: #517FA4;
+$purple: #74226C;
+$yellow: #FFA000;
+$magenta: #FF4081;
+$brown: #795548;
+$sky-blue: #61C6EC;
+$violet: #912F56;
+$pumpkin-orange: #D36135;
+$money-green: #179054;
+$crimson-red: #AF1729;
+
+$brand-primary:         $theme-primary !default;
+$brand-info:            #B8B8B8 !default; // Use as secondary color
+$brand-success:         #73A13E !default;
+$brand-danger:          #D0021B !default;
+$brand-warning:         #F9421F !default;
+$brand-alt: #FAFAFA !default;
