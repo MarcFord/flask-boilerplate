@@ -28,4 +28,4 @@ setup a directory structure that I find to be easy to work with that helps to or
     12. Font-Awesome
     
 #### Work in Progress
-This project is a work in progress, documentation and base are not yet fully developed. Support for the community is welcome!
+This project is a work in progress, documentation and base are not yet fully developed. Support form the community is welcome!
