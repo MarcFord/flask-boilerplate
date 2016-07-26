@@ -45,7 +45,7 @@ class Application(object):
 
     def __init__(self, env):
         self.env = env
-        self.app = Flask(__name__, static_folder='./static', template_folder='./templates/')
+        self.app = Flask(__name__, static_folder='../static', template_folder='../templates/')
         self.config = config[env]
         self.app.config.from_object(self.config)
         self.app.env = self.env

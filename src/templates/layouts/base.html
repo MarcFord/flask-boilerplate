@@ -8,15 +8,17 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         {% block page_styles %}
+            <link rel="stylesheet" type="text/css" href="/static/styles/main.css">
         {% endblock page_styles %}
-        <script src="js/vendor/modernizr-2.8.3.min.js"></script>
     </head>
     <body>
         <!--[if lt IE 8]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
-        {% block content %}{% endblock content %}
+        <div class="container-fluid">
+            {% block content %}{% endblock content %}
+        </div>
 
         {% block page_scripts %}
             <script src="https://code.jquery.com/jquery-{{JQUERY_VERSION}}.min.js"></script>
