@@ -25,7 +25,7 @@ class QueueConfig(object):
 
 
 class TaskRouter(object):
-    system_tasks = ('start_job', )
+    system_tasks = ()
 
     def route_for_task(self, task, args, kwargs):
         task_name = task.split('.')[-1]
