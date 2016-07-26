@@ -1,0 +1,5 @@
+bind = '0.0.0.0:5000'
+chdir = '/usr/src/app'
+worker_class = 'gevent'
+loglevel = 'info'
+errorlog = '/usr/src/app/var/log/gunicorn.error'
