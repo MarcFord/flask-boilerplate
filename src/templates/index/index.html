@@ -1,13 +1,34 @@
 {% extends "layouts/base.html" %}
 {% block page_title %}Flask Boilerplate{% endblock page_title %}
 {% block content %}
-    <div class="col-xs-10 col-xs-offset-1">
-        <div class="jumbotron">
-            <h1>Flask Boilerplate</h1>
-            <hr />
-            <p>
-                Flask Boilerplate is here to help you build a new flask application with support for many useful baked in options!
-            </p>
+    <div class="row">
+        <div class="col-xs-10 col-xs-offset-1">
+            <div class="jumbotron">
+                <h1>Flask Boilerplate</h1>
+                <hr />
+                <p>
+                    Flask Boilerplate is here to help you build a new flask application with support for many useful baked in options!
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-8 col-xs-2">
+            <ul>
+                <li>Clean and friendly directory structure</li>
+                <li>SQLAlchemy, Flask-SQLAlchemy, SQLAlchemy-Utils, and a custom base model</li>
+                <li>Alembic (for database migrations)</li>
+                <li>Celery, Flask-Celery, Flask-Celery-Helper, a Custom Task Router</li>
+                <li>Flask-Script; with some custom commands to wrap running gulp tasks and some database commands</li>
+                <li>Flask-DebugToolbar</li>
+                <li>Flask-Classy; with a custom base view class for class based views</li>
+                <li>Flask-Admin</li>
+                <li>WTForms</li>
+                <li>PyYAML, used here for database seeds</li>
+                <li>Gunicorn, for application server with gevent</li>
+                <li>Bootstrap-sass</li>
+                <li>Font-Awesome</li>
+            </ul>
         </div>
     </div>
 {% endblock content %}
