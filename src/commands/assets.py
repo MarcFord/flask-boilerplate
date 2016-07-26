@@ -13,7 +13,7 @@ from lib.ext.command.base_command import BaseCommand
 class GulpCommand(BaseCommand):
     gulp_command = 'gulp'
     option_list = (
-        Option('--production', '-p', dest='prod'),
+        Option('--production', '-p', action="store_true", dest='prod'),
     )
 
     def __init__(self, *args, **kwargs):
@@ -55,7 +55,7 @@ class GulpCommand(BaseCommand):
         self.stdout.write('>>> Starting gulp')
 
         if self.env == 'production':
-            gulp_command = '{cmd} --production'.format(self.gulp_command)
+            gulp_command = '{cmd} --production'.format(cmd=self.gulp_command)
         else:
             gulp_command = self.gulp_command
         self.gulp_process = subprocess.Popen(

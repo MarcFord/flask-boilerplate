@@ -45,7 +45,7 @@ gulp.task('build-js', ['bootstrap-js'], function() {
 gulp.task('build-css', function() {
   return gulp.src(config.assetsDir + 'scss/**/*.scss')
     .pipe(sass())
-    .pipe(gutil.env.type === 'production' ? minifycss() : gutil.noop())
+    .pipe(config.production ? minifycss() : gutil.noop())
     .pipe(gulp.dest(config.publicDir + '/styles'));
 });
 
@@ -66,7 +66,7 @@ gulp.task('images', function () {
 });
 
 gulp.task('default', ['images', 'build-fonts', 'build-js', 'build-css'], function() {
-    return gutil.log('Gulp is running!')
+    return gutil.log('Gulp Default Task Builds All Front-end Assets');
 });
 
 /* Watch Files For Changes */
