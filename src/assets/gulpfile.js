@@ -28,7 +28,11 @@ gulp.task('jshint', function() {
     .pipe(jshint.reporter('jshint-stylish'));
 });
 
-gulp.task('build-js', function() {
+gulp.task('bootstrap-js', function () {
+    return gulp.src(config.assetsDir + 'node_modules/bootstrap-sass/assets/javascripts/bootstrap.min.js').pipe(gulp.dest(config.publicDir + '/script'));
+});
+
+gulp.task('build-js', ['bootstrap-js'], function() {
   return gulp.src(config.assetsDir + 'js/**/*.js')
     .pipe(sourcemaps.init())
       .pipe(concat('site.js'))
