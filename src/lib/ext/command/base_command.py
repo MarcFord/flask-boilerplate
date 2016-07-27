@@ -1,5 +1,6 @@
 from flask_script import Command
 import sys
+import logging
 
 
 class OutputWrapper(object):
@@ -40,4 +41,7 @@ class BaseCommand(Command):
     def __init__(self, stdout=None, stderr=None, *args, **kwargs):
         self.stdout = OutputWrapper(stdout or sys.stdout)
         self.stderr = OutputWrapper(stderr or sys.stderr)
+        self.logger = logging.getLogger('application-cli')
+        self.logger.addHandler(logging.StreamHandler())
+        self.logger.setLevel(logging.DEBUG)
         super(BaseCommand, self).__init__(*args, **kwargs)

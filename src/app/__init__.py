@@ -5,6 +5,7 @@ from flask_celery import Celery
 from flask_migrate import Migrate
 from flask_session import Session
 from flask_admin import Admin
+from flask_security import Security, SQLAlchemyUserDatastore
 from lib.ext.model.orm.alchemy_base import AlchemyBase
 from lib.session import RedisSessionInterface
 from .config import config
@@ -32,6 +33,7 @@ cache = Cache()
 celery = Celery()
 bcrypt = Bcrypt()
 admin = Admin()
+security = Security()
 
 
 class ApplicationFactory(object):
@@ -82,6 +84,10 @@ class Application(object):
         cache.init_app(self.app, config=self.app.config['REDIS_CACHE_CONFIG'])
         bcrypt.init_app(self.app)
         admin.init_app(self.app)
+        from models.role import Role
+        from models.user import User
+        user_datastore = SQLAlchemyUserDatastore(db, User, Role)
+        security.init_app(self.app, user_datastore)
 
     def configure_session(self):
         redis_session_store = self.app.config['REDIS_STORAGE']

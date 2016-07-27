@@ -67,3 +67,13 @@ class BaseConfig(object):
         host=os.environ.get('DB_HOST') or 'localhost',
         port=os.environ.get('DB_PORT') or 3306
     )
+
+    # Flask-Security Settings Details can be found at https://pythonhosted.org/Flask-Security/configuration.html
+    SECURITY_PASSWORD_HASH = 'bcrypt'
+    SECURITY_PASSWORD_SALT = 'g4hgMQUX#%6Bnv^v'
+    SECURITY_EMAIL_SENDER = 'no-reply@flask-boilerplate.org'
+    SECURITY_TOKEN_MAX_AGE = 300  # Token has a 5min timeout
+    SECURITY_TRACKABLE = True
+    SECURITY_CHANGEABLE = True
+    SECURITY_RECOVERABLE = True
+    SECURITY_REGISTERABLE = True

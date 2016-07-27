@@ -7,6 +7,7 @@ from app import ApplicationFactory
 from flask_migrate import MigrateCommand
 from commands.orm import manager as orm_commands
 from commands.assets import Build, Watch, LintJS
+from commands.user import UserCreate, RoleCreate, RoleAssign, RoleList
 
 
 manager = Manager(ApplicationFactory.create_application)
@@ -22,6 +23,10 @@ manager.add_command('orm', orm_commands)
 manager.add_command('build', Build())
 manager.add_command('watch', Watch())
 manager.add_command('lint_js', LintJS())
+manager.add_command('create_user', UserCreate())
+manager.add_command('create_role', RoleCreate())
+manager.add_command('assign_role', RoleAssign())
+manager.add_command('list_roles', RoleList())
 
 
 @manager.command
