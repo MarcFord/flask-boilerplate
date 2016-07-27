@@ -1,11 +1,12 @@
-from flask import Flask
+from flask import Flask, url_for
 from flask.templating import render_template
 from flask_cache import Cache
 from flask_celery import Celery
 from flask_migrate import Migrate
 from flask_session import Session
 from flask_admin import Admin
-from flask_security import Security, SQLAlchemyUserDatastore
+from flask_security import Security
+from lib.ext.admin.data_store import SQLAlchemyUserDatastore
 from lib.ext.model.orm.alchemy_base import AlchemyBase
 from lib.session import RedisSessionInterface
 from .config import config
@@ -59,10 +60,22 @@ class Application(object):
         self.configure_database()
         self.configure_session()
         self.register_plugins()
-        self.configure_context_processors()
         self.configure_handlers()
         self.register_controllers()
         self.configure_celery()
+        self.configure_admin_views()
+        self.configure_context_processors()
+
+    def configure_admin_views(self):
+        from lib.ext.admin.admin_view import AdminView
+        from models.role import Role
+        from models.user import User
+        admin.template_mode = 'bootstrap3'
+        admin.base_template = 'layouts/admin.html'
+        session = db.session
+        admin.add_view(AdminView(User, session))
+        admin.add_view(AdminView(Role, session))
+        admin.init_app(self.app)
 
     def configure_celery(self):
         from .celery_queu_config import QueueConfig
@@ -83,7 +96,6 @@ class Application(object):
         toolbar.init_app(self.app)
         cache.init_app(self.app, config=self.app.config['REDIS_CACHE_CONFIG'])
         bcrypt.init_app(self.app)
-        admin.init_app(self.app)
         from models.role import Role
         from models.user import User
         user_datastore = SQLAlchemyUserDatastore(db, User, Role)
@@ -183,3 +195,13 @@ class Application(object):
         @app.context_processor
         def inject_google_analytics():
             return dict(GOOGLE_ANALYTICS_SITE_ID=app.config['GOOGLE_ANALYTICS_SITE_ID'])
+
+        @app.context_processor
+        def inject_admin_base():
+            from flask_admin import helpers as admin_helpers
+            return dict(
+                admin_base_template='admin/base.html',
+                admin_view=admin.index_view,
+                get_url=url_for,
+                h=admin_helpers
+            )

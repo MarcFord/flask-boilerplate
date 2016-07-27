@@ -77,6 +77,15 @@ class BaseConfig(object):
     SECURITY_CHANGEABLE = True
     SECURITY_RECOVERABLE = True
     SECURITY_REGISTERABLE = True
+    SECURITY_URL_PREFIX = "/admin"
+    SECURITY_LOGIN_URL = "/login/"
+    SECURITY_LOGOUT_URL = "/logout/"
+    SECURITY_REGISTER_URL = "/register/"
+    SECURITY_POST_LOGIN_VIEW = "/admin/"
+    SECURITY_POST_LOGOUT_VIEW = "/admin/"
+    SECURITY_POST_REGISTER_VIEW = "/admin/"
+
+    SUPER_USER_ROLE = 'administrator'
 
     # JQUERY Version
     JQUERY_VERSION = '3.1.0'
