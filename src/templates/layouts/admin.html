@@ -1,5 +1,11 @@
 {% extends 'admin/base.html' %}
 
+{% block title %}Flask-Boilerplate, Flask-Admin, and Flask-Security{% endblock title %}
+
+{% block head_css %}
+    <link rel="stylesheet" type="text/css" href="/static/styles/main.css">
+{% endblock head_css %}
+
 {% block access_control %}
 {% if current_user.is_authenticated %}
 <div class="navbar-text btn-group pull-right">

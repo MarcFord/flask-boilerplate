@@ -160,11 +160,11 @@ class Application(object):
 
         @app.errorhandler(500)
         def error(e):
-            return render_template('error500.html', error=e), 500
+            return render_template('errors/500.html', error=e), 500
 
         @app.errorhandler(404)
         def not_found(e):
-            return render_template('error.html', error=e), 404
+            return render_template('errors/404.html', error=e), 404
 
         @app.after_request
         def after_request(response):
