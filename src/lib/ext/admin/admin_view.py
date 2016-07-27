@@ -13,7 +13,7 @@ class AdminView(ModelView):
         if not current_user.is_active or not current_user.is_authenticated:
             return False
 
-        if current_user.has_role('superuser'):
+        if current_user.has_role(self.super_user_role):
             return True
 
         return False
