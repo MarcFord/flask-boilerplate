@@ -357,3 +357,4 @@ local.properties
 src/static/
 src/data/
 logs/
+.envrc
