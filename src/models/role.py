@@ -1,6 +1,7 @@
 from lib.ext.model.orm import BaseModel, db
 from flask_security import RoleMixin
 from sqlalchemy.orm import relationship
+from sqlalchemy import UniqueConstraint
 
 
 class Role(BaseModel, RoleMixin):
@@ -11,7 +12,10 @@ class Role(BaseModel, RoleMixin):
 
 class UserRole(BaseModel):
     __tablename__ = 'UserRoles'
+    __table_args__ = (
+        UniqueConstraint('user_id', 'role_id', name='unique_role_user_user_roles'),
+    )
     user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
-    user = relationship('User', back_populates='user_roles', uselist=False)
+    user = relationship('User', uselist=False)
     role_id = db.Column(db.Integer, db.ForeignKey('Roles.id'))
-    role = relationship('Role', back_populates='user_roles', uselist=False)
+    role = relationship('Role', uselist=False)

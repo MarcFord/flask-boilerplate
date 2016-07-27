@@ -88,6 +88,7 @@ class Application(object):
         from models.user import User
         user_datastore = SQLAlchemyUserDatastore(db, User, Role)
         security.init_app(self.app, user_datastore)
+        self.app.user_datastore = user_datastore
 
     def configure_session(self):
         redis_session_store = self.app.config['REDIS_STORAGE']
