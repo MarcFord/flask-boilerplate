@@ -1,0 +1,9 @@
+model: models.role.Role
+tags:
+  - testing
+  - production
+  - development
+fixtures:
+  admin:
+    name: administrator
+    description: Site Administrator
