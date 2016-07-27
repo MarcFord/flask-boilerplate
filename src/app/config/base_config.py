@@ -77,3 +77,9 @@ class BaseConfig(object):
     SECURITY_CHANGEABLE = True
     SECURITY_RECOVERABLE = True
     SECURITY_REGISTERABLE = True
+
+    # JQUERY Version
+    JQUERY_VERSION = '3.1.0'
+
+    # GOOGLE Analytics
+    GOOGLE_ANALYTICS_SITE_ID = None

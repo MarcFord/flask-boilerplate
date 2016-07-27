@@ -175,3 +175,11 @@ class Application(object):
         @app.context_processor
         def inject_config():
             return dict(flask_config=app.config)
+
+        @app.context_processor
+        def inject_jquery_version():
+            return dict(JQUERY_VERSION=app.config['JQUERY_VERSION'])
+
+        @app.context_processor
+        def inject_google_analytics():
+            return dict(GOOGLE_ANALYTICS_SITE_ID=app.config['GOOGLE_ANALYTICS_SITE_ID'])
