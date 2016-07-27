@@ -8,14 +8,14 @@ class SQLAlchemyDatastore(Datastore):
         super(SQLAlchemyDatastore, self).__init__(db)
 
     def commit(self):
-        self.db.session.commit()
+        self.session.commit()
 
     def put(self, model):
-        self.db.session.add(model)
+        model.save()
         return model
 
     def delete(self, model):
-        self.db.session.delete(model)
+        model.delete()
 
 
 class SQLAlchemyUserDatastore(SQLAlchemyDatastore, UserDatastore):
