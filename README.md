@@ -13,7 +13,7 @@ To use this for your flask application some requirements must be meet. I highly 
 I have baked in flask extensions that I find to be useful for nearly all my flask projects. Node asset management with bootstrap-sass and font-awesome. I have also
 extended some of the extensions to make them slightly easier to use (in my humble opinion), and some customizations I make to every flask application. I have also
 setup a directory structure that I find to be easy to work with that helps to organize my projects better.
-#### Backed In:
+#### Baked In:
     1. SQLAlchemy, Flask-SQLAlchemy, and SQLAlchemy-Utils
     2. Alembic (for database migrations)
     3. Celery, Flask-Celery, Flask-Celery-Helper, a Custom Task Router
@@ -21,11 +21,12 @@ setup a directory structure that I find to be easy to work with that helps to or
     5. Flask-DebugToolbar
     6. Flask-Classy; with a custom base view class for class based views
     7. Flask-Admin
-    8. WTForms
-    9. PyYAML, used here for database seeds
-    10. Gunicorn, for application server with gevent
-    11. Bootstrap-sass
-    12. Font-Awesome
+    8. Flask-Security
+    9. WTForms
+    10. PyYAML, used here for database seeds
+    11. Gunicorn, for application server with gevent
+    12. Bootstrap-sass
+    13. Font-Awesome
     
 #### Work in Progress
 This project is a work in progress, documentation and base are not yet fully developed. Support form the community is welcome!
