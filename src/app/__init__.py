@@ -41,13 +41,24 @@ security = Security()
 
 
 class ApplicationFactory(object):
+    """
+    Application Factory
+    """
     @staticmethod
     def create_application(env='development'):
+        """
+        Create a Configured Flask Application
+        :param env:
+        :return:
+        """
         from ._models import register_models  # This Registers the models with the app to avoid circular imports
         return Application(env).app
 
 
 class Application(object):
+    """
+    Flask Application
+    """
     def __init__(self, env):
         self.env = env
         self.app = Flask(__name__, static_folder='../static', template_folder='../templates/')
