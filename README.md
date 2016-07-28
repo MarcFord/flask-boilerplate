@@ -22,7 +22,7 @@ setup a directory structure that I find to be easy to work with that helps to or
     6. Flask-Classy; with a custom base view class for class based views
     7. Flask-Admin
     8. Flask-Security
-    9. WTForms
+    9. WTForms, Flask-WTForms
     10. PyYAML, used here for database seeds
     11. Gunicorn, for application server with gevent
     12. Bootstrap-sass
