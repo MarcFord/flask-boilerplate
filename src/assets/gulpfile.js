@@ -65,7 +65,11 @@ gulp.task('images', function () {
    return gulp.src(config.imagesDir + '/**.*').pipe(gulp.dest(config.publicDir + '/img'));
 });
 
-gulp.task('default', ['images', 'build-fonts', 'build-js', 'build-css'], function() {
+gulp.task('favicon', function () {
+   return gulp.src(config.assetsDir + '/icons/favicon.ico').pipe(gulp.dest(config.publicDir + '/'));
+});
+
+gulp.task('default', ['favicon', 'images', 'build-fonts', 'build-js', 'build-css'], function() {
     return gutil.log('Gulp Default Task Builds All Front-end Assets');
 });
 

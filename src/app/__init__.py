@@ -1,26 +1,29 @@
-from flask import Flask, url_for
-from flask.templating import render_template
+import os
+import redis
+import logging
+import warnings
+from datetime import datetime
+from logging import Formatter
+from logging.handlers import RotatingFileHandler
+# Flask and Flask Extensions Imports
+from flask import Flask
 from flask_cache import Cache
 from flask_celery import Celery
 from flask_migrate import Migrate
 from flask_session import Session
 from flask_admin import Admin
 from flask_security import Security
-from lib.ext.admin.data_store import SQLAlchemyUserDatastore
-from lib.ext.model.orm.alchemy_base import AlchemyBase
-from lib.session import RedisSessionInterface
-from .config import config
-from datetime import datetime
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_bcrypt import Bcrypt
-from logging import Formatter
-from logging.handlers import RotatingFileHandler
-import os
-import redis
-import logging
-import uuid
-import warnings
 from flask.exthook import ExtDeprecationWarning
+# Project Base Imports
+from lib.session import RedisSessionInterface
+from lib.ext.admin.data_store import SQLAlchemyUserDatastore
+from lib.ext.model.orm.alchemy_base import AlchemyBase
+from .handlers import configure_handlers
+from .context_processors import configure_context_processors
+from .register_views import register_views, register_admin_views
+from .config import config
 
 
 warnings.simplefilter('ignore', ExtDeprecationWarning)
@@ -45,7 +48,6 @@ class ApplicationFactory(object):
 
 
 class Application(object):
-
     def __init__(self, env):
         self.env = env
         self.app = Flask(__name__, static_folder='../static', template_folder='../templates/')
@@ -60,39 +62,17 @@ class Application(object):
         self.configure_database()
         self.configure_session()
         self.register_plugins()
-        self.configure_handlers()
-        self.register_controllers()
+        configure_handlers(self.app, db)
+        register_views(self.app)
         self.configure_celery()
-        self.configure_admin_views()
-        self.configure_context_processors()
-
-    def configure_admin_views(self):
-        from lib.ext.admin.admin_view import AdminView
-        from models.role import Role
-        from models.user import User
-        admin.template_mode = 'bootstrap3'
-        admin.base_template = 'layouts/admin.html'
-        session = db.session
-        admin.add_view(AdminView(User, session))
-        admin.add_view(AdminView(Role, session))
-        admin.init_app(self.app)
-
-    def configure_celery(self):
-        from .celery_queu_config import QueueConfig
-        queue_config = QueueConfig()
-        self.app.config.update(queue_config())
-        celery.init_app(self.app)
-        celery.conf['BROKER_URL'] = self.app.config['CELERY_BROKER_URL']
-
-    def register_controllers(self):
-        from views import views
-        for view in views:
-            if view['route_base']:
-                view['class'].register(app=self.app, route_base=view['route_base'])
-            else:
-                view['class'].register(app=self.app)
+        register_admin_views(self.app, admin, db)
+        configure_context_processors(self.app, admin)
 
     def register_plugins(self):
+        """
+        Register Flask Extensions with the application.
+        :return: None
+        """
         toolbar.init_app(self.app)
         cache.init_app(self.app, config=self.app.config['REDIS_CACHE_CONFIG'])
         bcrypt.init_app(self.app)
@@ -102,106 +82,107 @@ class Application(object):
         security.init_app(self.app, user_datastore)
         self.app.user_datastore = user_datastore
 
+    def configure_celery(self):
+        """
+        Configure Celery to use custom Que and Task Router
+        :return: None
+        """
+        from .celery_queu_config import QueueConfig
+        queue_config = QueueConfig()
+        self.app.config.update(queue_config())
+        celery.init_app(self.app)
+        celery.conf['BROKER_URL'] = self.app.config['CELERY_BROKER_URL']
+
     def configure_session(self):
+        """
+        Configure Application Session Handler
+        :return: None
+        """
         redis_session_store = self.app.config['REDIS_STORAGE']
         redis_storage = redis.Redis(host=redis_session_store['host'],
                                     port=redis_session_store['port'],
                                     db=redis_session_store['db'],
                                     encoding=redis_session_store['charset'])
-        self.app.session_interface = RedisSessionInterface(redis=redis_storage, prefix=self.app.config['SESSION_KEY_PREFIX'])
+        self.app.session_interface = RedisSessionInterface(
+            redis=redis_storage,
+            prefix=self.app.config['SESSION_KEY_PREFIX']
+        )
 
     def configure_database(self):
+        """
+        Configure the database with the application
+        :return: None
+        """
         db.init_app(self.app)
         migrate.init_app(self.app, db)
 
     def configure_application_logging(self):
-        if not os.path.exists(self.app.config['LOG_PATH']):
-            os.makedirs(self.app.config['LOG_PATH'])
-        log_file = os.path.join(self.app.config['LOG_PATH'], '{env}_application.log'.format(env=self.env))
+        """
+        Configure Application Logging
+        :return: None
+        """
+        self.create_logging_directory()
 
-        logger_handler = RotatingFileHandler(log_file, maxBytes=100000, backupCount=1)
+        logger_handler = self.get_log_handler('flask_app', max_bytes=100000, backup_count=1)
 
-        log_formatter = Formatter(
-            '%(asctime)s %(levelname)s: %(message)s '
-            '[in %(pathname)s:%(lineno)d]'
-        )
-        logger_handler.setFormatter(log_formatter)
-        if self.env == 'development':
-            log_level = logging.DEBUG
-        else:
-            log_level = logging.INFO
+        logger_handler.setFormatter(self.get_log_format())
 
-        logger_handler.setLevel(log_level)
+        logger_handler.setLevel(self.get_log_level())
         self.app.logger.addHandler(logger_handler)
 
     def configure_alchemy_logging(self):
-        if not os.path.exists(self.app.config['LOG_PATH']):
-            os.makedirs(self.app.config['LOG_PATH'])
-        log_file = os.path.join(self.app.config['LOG_PATH'], '{env}_alchemy.log'.format(env=self.env))
+        """
+        Configure SQLAlchemy Logging
+        :return: None
+        """
+        self.create_logging_directory()
 
-        handler = RotatingFileHandler(log_file, maxBytes=100000, backupCount=1)
+        handler = self.get_log_handler('alchemy', max_bytes=100000, backup_count=1)
 
-        formatter = Formatter(
+        handler.setFormatter(self.get_log_format())
+
+        handler.setLevel(self.get_log_level())
+        logger = logging.getLogger('sqlalchemy')
+        logger.addHandler(handler)
+
+    @staticmethod
+    def get_log_format():
+        """
+        Gets the log formatter
+        :return: Log Formatter
+        :rtype: Formatter
+        """
+        return Formatter(
             '%(asctime)s %(levelname)s: %(message)s '
             '[in %(pathname)s:%(lineno)d]'
         )
-        handler.setFormatter(formatter)
+
+    def get_log_level(self):
+        """
+        Get the Log Level based on the application environment
+        :return: int
+        """
         if self.env == 'development':
             log_level = logging.DEBUG
         else:
             log_level = logging.INFO
+        return log_level
 
-        handler.setLevel(log_level)
-        logger = logging.getLogger('sqlalchemy')
-        logger.addHandler(handler)
+    def get_log_handler(self, log_name, max_bytes=100000, backup_count=1):
+        """
+        Gets the Log handler to be used by application loggers
+        :param log_name: Name of the log
+        :param max_bytes: Max number of bytes for a log file to be
+        :param backup_count: Number of backup log files to keep
+        :return: None
+        """
+        log_file = os.path.join(self.app.config['LOG_PATH'], '{env}_{name}.log'.format(env=self.env, name=log_name))
+        return RotatingFileHandler(log_file, maxBytes=max_bytes, backupCount=backup_count)
 
-    def configure_handlers(self):
-        app = self.app
-
-        @app.errorhandler(500)
-        def error(e):
-            return render_template('errors/500.html', error=e), 500
-
-        @app.errorhandler(404)
-        def not_found(e):
-            return render_template('errors/404.html', error=e), 404
-
-        @app.after_request
-        def after_request(response):
-            if db.session.dirty:
-                try:
-                    app.logger.debug('Committing transaction!')
-                    db.session.commit()
-                except Exception as e:
-                    app.logger.error(e)
-            return response
-
-        @app.before_request
-        def before_request():
-            from flask import g
-            g.request_uuid = uuid.uuid4().hex
-
-    def configure_context_processors(self):
-        app = self.app
-
-        @app.context_processor
-        def inject_config():
-            return dict(flask_config=app.config)
-
-        @app.context_processor
-        def inject_jquery_version():
-            return dict(JQUERY_VERSION=app.config['JQUERY_VERSION'])
-
-        @app.context_processor
-        def inject_google_analytics():
-            return dict(GOOGLE_ANALYTICS_SITE_ID=app.config['GOOGLE_ANALYTICS_SITE_ID'])
-
-        @app.context_processor
-        def inject_admin_base():
-            from flask_admin import helpers as admin_helpers
-            return dict(
-                admin_base_template='admin/base.html',
-                admin_view=admin.index_view,
-                get_url=url_for,
-                h=admin_helpers
-            )
+    def create_logging_directory(self):
+        """
+        Creates the log directory if it does not already exist
+        :return: None
+        """
+        if not os.path.exists(self.app.config['LOG_PATH']):
+            os.makedirs(self.app.config['LOG_PATH'])
